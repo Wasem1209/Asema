@@ -1,11 +1,26 @@
-require ("dotenv").config();
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const trackRoutes = require("./routes/track");
 
 const app = express();
-app.use(cors());
+
+// ✅ CORS configuration
+const corsOptions = {
+  origin: [
+    "https://dhl-delivery.vercel.app", // production frontend
+    "http://localhost:3000",           // local dev
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+// Explicitly handle preflight requests
+app.options("*", cors(corsOptions));
+
 app.use(express.json());
 
 const uri = process.env.MONGO_URI;
